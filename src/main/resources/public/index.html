@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        table.gridtable {
+            font-family: "DejaVu Sans Mono";
+            font-size: 14px;
+            color: #333333;
+            border-width: 1px;
+            border-color: #666666;
+            border-collapse: collapse;
+        }
+
+        table.gridtable th {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #dedede;
+        }
+
+        table.gridtable td {
+            border-width: 1px;
+            padding: 8px;
+            border-style: solid;
+            border-color: #666666;
+            background-color: #ffffff;
+        }
+    </style>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript">
+        //通过表格展示数据
+        function showTable(str) {
+            var rowCount = str.data.length;
+            var table = $("<table class='gridtable' > ");
+            table.appendTo($("#createtable"));
+
+            var trHeader = $("<tr></tr>");
+            trHeader.appendTo(table);
+            var td = $("<th>username</th> <th>password</th>");
+            td.appendTo(trHeader);
+
+            for (var i = 0; i < rowCount; i++) {
+                var tr = $("<tr></tr>");
+                tr.appendTo(table);
+                var username = str.data[i].username;
+                var password = str.data[i].password;
+                var td = $("<td>" + username + "</td>" + "<td>" + password + "</td>");
+                td.appendTo(tr);
+            }
+            $("#createtable").append("</table>");
+        }
+        //打开页面时运行
+        $(document).ready(function () {
+            var users = [];
+            var user1 = {"username": "dd", "password": "123"};
+            var user2 = {"username": "gg", "password": "123"};
+            users.push(user1);
+            users.push(user2);
+            $.ajax({
+                type: "POST",
+                url: "users",
+                timeout: 30000,
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify(users),
+                success: function (data) {
+                    //将返回的数据展示成table
+                    showTable(data);
+                },
+                error: function () { //请求出错的处理
+                    $("#result").text("请求出错");
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<div id="createtable"></div>
+</body>
+</html>
